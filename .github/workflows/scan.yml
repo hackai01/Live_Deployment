@@ -64,7 +64,7 @@ jobs:
       run: docker build . --file Dockerfile --tag hackai87/jenkins01:$(date +%s)
 
     - name: Docker Push
-      run: docker push hackai87/jenkins01:$(date +%s)
+      run: docker push ${{secrets.DOCKER_USER}}/jenkins01
 
   build:
     needs: push
