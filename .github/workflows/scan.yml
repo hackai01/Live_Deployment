@@ -1,6 +1,12 @@
 name: anchore-grype-scanning
 
-on: [push]
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  schedule:
+    - cron: '41 16 * * 0'
 
 permissions: write-all
 
@@ -48,8 +54,26 @@ jobs:
       with:
         sarif_file: ${{ steps.imagescan.outputs.sarif }}
 
-  build:
+  push:
     needs: anchore_scan_job
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: docker login
+      env:
+        DOCKER_USER: ${{secrets.DOCKER_USER}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      run: |
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag cole/live_development:$(date +%s)
+
+    - name: Docker Push
+      run: docker push ${{secrets,DOCKER_USER}}/hackai87/jenkins01
+
+  build:
+    needs: push
     runs-on: ubuntu-latest
     steps:
 
@@ -85,21 +109,3 @@ jobs:
         version_label: "Dockerdeployment-${{ steps.format-time.outputs.replaced }}"
         region: us-east-1
         deployment_package: deploy.zip
-
-  push:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: docker login
-      env:
-        DOCKER_USER: ${{secrets.DOCKER_USER}}
-        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
-      run: |
-        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag cole/live_development:$(date +%s)
-
-    - name: Docker Push
-      run: docker push ${{secrets.DOCKER_USER}}/hackai87/jenkins01
