@@ -16,7 +16,7 @@ jobs:
       id: scan
       uses: anchore/scan-action@v2
       with:
-        path: "./"
+        path: "."
         fail-build: true
         acs-report-enable: true
     
