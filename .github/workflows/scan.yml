@@ -41,7 +41,7 @@ jobs:
     - name: upload Anchore Image scan SARIF report
       uses: github/codeql-action/upload-sarif@v2
       with:
-        sarif_file: ${{ steps.imagescan.outputs.sarif }}
+        sarif_file: ${{ steps.scan.outputs.sarif }}
 
   push:
     needs: anchore_scan_job
