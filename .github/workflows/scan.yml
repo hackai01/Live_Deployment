@@ -87,6 +87,7 @@ jobs:
         deployment_package: deploy.zip
 
   push:
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
