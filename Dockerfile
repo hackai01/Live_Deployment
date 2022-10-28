@@ -1,8 +1,10 @@
-FROM python:3.5-slim-buster
+FROM python:3.9.15
 
 WORKDIR /app
 
 COPY requirements.txt requirements.txt
+
+RUN apt update -y && apt upgrade -y
 
 RUN pip3 install -r requirements.txt
 
