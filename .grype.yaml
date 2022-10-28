@@ -1,0 +1,5 @@
+external-sources:
+  enable: true
+  rhel:
+    search-upstream-by-sha1: true
+    base-url: https://access.redhat.com/hydra/rest/securitydata/cve.json
